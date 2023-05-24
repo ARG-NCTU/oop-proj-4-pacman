@@ -1,4 +1,4 @@
-import pygame  ##hihi
+import pygame
 import random
 import environment
 
