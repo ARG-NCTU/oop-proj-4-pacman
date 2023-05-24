@@ -1,6 +1,7 @@
 import pygame
 # from player import Player
 from ghost import *
+from player import *
 import environment
 
 SCREEN_WIDTH = 900
@@ -25,6 +26,10 @@ blue = Ghost("blue",850,0,-2,0)
 ghosts.add(pinky)
 ghosts.add(blue)
 
+# create player
+player_x = Player(450, 663)
+
+
 
 # game loop
 is_running = True
@@ -39,6 +44,9 @@ while is_running:
     Ghost.update(blue)
     ghosts.draw(screen)
     blue.draw(screen)
+    
+    # update players
+    player_x.draw(screen)
 
     # event handler
     for event in pygame.event.get():
