@@ -699,11 +699,11 @@ def draw_board():
     num2 = (WIDTH // 30)
     for i in range(len(level)):
         for j in range(len(level[i])):
-            if level[i][j] == 1:
+            if level[i][j] == 1:  # small dot
                 pygame.draw.circle(screen, 'white', (j * num2 + (0.5 * num2), i * num1 + (0.5 * num1)), 4)
-            if level[i][j] == 2 and not flicker:
+            if level[i][j] == 2 and not flicker:  # power up big dot 
                 pygame.draw.circle(screen, 'white', (j * num2 + (0.5 * num2), i * num1 + (0.5 * num1)), 10)
-            if level[i][j] == 3:
+            if level[i][j] == 3:  # vertical line
                 pygame.draw.line(screen, color, (j * num2 + (0.5 * num2), i * num1),
                                  (j * num2 + (0.5 * num2), i * num1 + num1), 3)
             if level[i][j] == 4:
