@@ -1,9 +1,12 @@
 import pygame
 import random
 import environment
-
+import agent
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 950
+UNIT = 30
+UNIT = 30
+SPACE = UNIT//2
 
 # define some colors
 BLACK = (0,0,0)
@@ -17,53 +20,49 @@ class Ghost(pygame.sprite.Sprite):
     def __init__(self, name, x, y, dx, dy):
         # Call the parent class constructor
         pygame.sprite.Sprite.__init__(self)
-        # set the direaction of the ghost
+        # set the direction of the ghost
         self.dx = dx
         self.dy = dy
         # load image
         self.name = name
         self.img = pygame.image.load("assets/ghost_images/"+self.name+".png").convert_alpha()
-        self.image = pygame.transform.scale(self.img, (45, 45))  #resize to a block size
-        self.rect = self.image.get_rect()  #defines pos and size of ghost object
-        self.rect.topleft = (x, y)
+        self.image = pygame.transform.scale(self.img, (UNIT+SPACE, UNIT+SPACE))  #resize to a block size
+        # (x, y) is the center of the ghost
+        self.rect = self.image.get_rect()  #defines position and size of ghost object
+        self.rect.center = (x, y)
 
     def update(self):
-        self.rect.x += self.dx
-        self.rect.y += self.dy
-        if self.rect.right < 0:
-            self.rect.left = SCREEN_WIDTH
-        elif self.rect.left > SCREEN_WIDTH:
-            self.rect.right = 0
-        if self.rect.bottom < 0:
-            self.top = SCREEN_HEIGHT
-        elif self.rect.top > SCREEN_HEIGHT:
-            self.rect.bottom = 0
-
-        # random choose the direction when encounter an intersection
-        if self.rect.topleft in self.get_intersection_position():
+        # check collision first
+        move = agent.check_collision(
+            self.rect.centerx, self.rect.centery, self.dx, self.dy, 3)
+        # if return True -> update position
+        if move:
+            self.rect.x += self.dx
+            self.rect.y += self.dy
+            if self.rect.right < 0:
+                self.rect.left = SCREEN_WIDTH
+            elif self.rect.left > SCREEN_WIDTH:
+                self.rect.right = 0
+            if self.rect.bottom < 0:
+                self.top = SCREEN_HEIGHT
+            elif self.rect.top > SCREEN_HEIGHT:
+                self.rect.bottom = 0
+        else:  # change move direction or stop
+            # random choose the direction when encounter a hinder
             direction = random.choice(("left","right","up","down"))
-            if direction == "left" and self.change_x == 0:
-                self.change_x = -2
-                self.change_y = 0
-            elif direction == "right" and self.change_x == 0:
-                self.change_x = 2
-                self.change_y = 0
-            elif direction == "up" and self.change_y == 0:
-                self.change_x = 0
-                self.change_y = -2
-            elif direction == "down" and self.change_y == 0:
-                self.change_x = 0
-                self.change_y = 2
-
-
-    def get_intersection_position(self):
-        items = []
-        for i, row in enumerate(environment.board_1()):
-            for j, item in enumerate(row):
-                if item == 3:
-                    items.append((j*32,i*32))
-
-            return items
+            if direction == "left" and self.dx == 0:
+                self.dx = -2
+                self.dy = 0
+            elif direction == "right" and self.dx == 0:
+                self.dx = 2
+                self.dy = 0
+            elif direction == "up" and self.dy == 0:
+                self.dx = 0
+                self.dy = -2
+            elif direction == "down" and self.dy == 0:
+                self.dx = 0
+                self.dy = 2
+        
         
     def draw(self, screen):
         pass
