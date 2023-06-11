@@ -15,7 +15,7 @@ GREEN = (0,255,0)
 RED = (255,0,0)
 
 class Ghost(pygame.sprite.Sprite):
-    def __init__(self, name, x, y, dx, dy):
+    def __init__(self, name, x, y, dx, dy, algorithm):
         # Call the parent class constructor
         pygame.sprite.Sprite.__init__(self)
         # set the direction of the ghost
@@ -31,10 +31,14 @@ class Ghost(pygame.sprite.Sprite):
         # (x, y) is the center of the ghost
         self.rect = self.image.get_rect()  #defines position and size of ghost object
         self.rect.center = (x, y)
+        self.deadRect = self.deadImg.get_rect()
+        self.deadRect.center =  (x,y)
         # attacked related attribute
         self._attacked = False
         self._attackedCounter = 0
         self.__attackedTime = 10
+        # moving algorithm
+        self.algorithm = algorithm
 
     def update(self):
         """
@@ -45,12 +49,35 @@ class Ghost(pygame.sprite.Sprite):
         if self._attackedCounter//30 == self.__attackedTime and self._attacked:
             self._attackedCounter = 0
             self._attacked = False
-            self.set_target()
+            if self.name == "orange" or self.name == "blue":
+                self.algorithm = "random"
 
         self.rect.x += self.dx
         self.rect.y += self.dy
+        self.deadRect.x += self.dx
+        self.deadRect.y += self.dy
 
-    def set_dir(self, canMove):
+    def set_dir(self, next_step, canMove):
+        """
+        :param target: the target coord (x, y); board[y][x]
+        """
+        if self.algorithm == "bfs":
+            if next_step == 0 and self.dy == 0:
+                self.dx = 0
+                self.dy = -2
+            elif next_step == 1 and self.dy == 0:
+                self.dx = 0
+                self.dy = 2
+            elif next_step == 2 and self.dx == 0:
+                self.dx = -2
+                self.dy = 0
+            elif next_step == 3 and self.dx == 0:
+                self.dx = 2
+                self.dy = 0 
+        else:
+            self.random_set_dir(canMove)
+
+    def random_set_dir(self, canMove):
         choice = 0
         dir = 4
         while choice == 0:
@@ -71,6 +98,9 @@ class Ghost(pygame.sprite.Sprite):
             self.dy = 0  
 
     def set_target(self):
+        """
+        0: chase Pacman, 1: attacked, moving to the center of the board
+        """
         pass
 
     def set_attacked(self):
@@ -78,34 +108,10 @@ class Ghost(pygame.sprite.Sprite):
         setter of attacked states
         """
         self._attacked = True
+        self.algorithm = "bfs"
 
     def draw(self, screen):
         if not self._attacked:
             screen.blit(self.image, self.rect)
         else:
-            screen.blit(self.deadImg, self.rect)
-        
-
-class Block(pygame.sprite.Sprite):
-    def __init__(self,x,y,color,width,height):
-        # Call the parent class (Sprite) constructor
-        pygame.sprite.Sprite.__init__(self)
-        # Set the background color and set it to be transparent
-        self.image = pygame.Surface([width,height])
-        self.image.fill(color)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x,y)
-
-
-class Food(pygame.sprite.Sprite):
-    def __init__(self, x, y, color, width, height):
-        # Call the parent class (Sprite) constructor
-        pygame.sprite.Sprite.__init__(self)
-        # Set the background color and set it to be transparent
-        self.image = pygame.Surface([width,height])
-        self.image.fill(BLACK)
-        self.image.set_colorkey(BLACK)
-        # Draw the ellipse
-        pygame.draw.ellipse(self.image,color,[0,0,width,height])
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x,y)
+            screen.blit(self.deadImg, self.deadRect)

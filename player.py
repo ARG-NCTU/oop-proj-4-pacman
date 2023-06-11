@@ -35,13 +35,13 @@ class Player(pygame.sprite.Sprite):
         for i in range(1, 5):
             player_images.append(pygame.transform.scale(pygame.image.load(f'assets/player_images/{i}.png'), (UNIT+SPACE, UNIT+SPACE)))
         if self.direction == 3:
-            screen.blit(player_images[counter%4], (self.player_x, self.player_y))
+            screen.blit(player_images[counter%4], (self.player_x-SPACE, self.player_y-SPACE))
         elif self.direction == 2:
-            screen.blit(pygame.transform.flip(player_images[counter%4], True, False), (self.player_x, self.player_y))
+            screen.blit(pygame.transform.flip(player_images[counter%4], True, False), (self.player_x-SPACE, self.player_y-SPACE))
         elif self.direction == 0:
-            screen.blit(pygame.transform.rotate(player_images[counter%4], 90), (self.player_x, self.player_y))
+            screen.blit(pygame.transform.rotate(player_images[counter%4], 90), (self.player_x-SPACE, self.player_y-SPACE))
         elif self.direction == 1:
-            screen.blit(pygame.transform.rotate(player_images[counter%4], 270), (self.player_x, self.player_y))
+            screen.blit(pygame.transform.rotate(player_images[counter%4], 270), (self.player_x-SPACE, self.player_y-SPACE))
 
 
 
@@ -68,7 +68,10 @@ class Player(pygame.sprite.Sprite):
         
         self.player_x += self.dx
         self.player_y += self.dy
-
-            # return self.player_x, self.player_y
-   
+        
+        #走到最左（右）邊要從右（左）邊回來
+        if self.player_x >= 700:
+            self.player_x = -50
+        if self.player_x < -50:
+            self.player_x = 700
     
