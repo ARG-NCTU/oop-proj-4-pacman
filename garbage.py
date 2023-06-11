@@ -229,3 +229,15 @@ def board_3():
     #         elif direction == 1 and turns_allowed[1]:
     #             self.dy = self.player_speed
     #             self.dx = 0
+
+
+    # back = (0,0)
+        # if gh_dx > 0:
+        #     back = (ghost[0]-1, ghost[1])
+        # elif gh_dx < 0:
+        #     back = (ghost[0]+1, ghost[1])
+        # elif gh_dy > 0:  # moving down
+        #     back = (ghost[0], ghost[1]-1)
+        # elif gh_dy < 0:
+        #     back = (ghost[0], ghost[1]+1)
+        # parent[back[1]][back[0]] = (0,0)

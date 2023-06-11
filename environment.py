@@ -7,7 +7,7 @@ WHITE = (255,255,255)
 PI = 3.14159
 UNIT = 25
 SPACE = UNIT/2
-NOTALLOW = (3,4,5,6,7,8,9)
+NOTALLOW = (3,4,5,6,7,8)
 
 
 originalBoard = [
@@ -52,9 +52,14 @@ class Board():
         self.score = 0
         self.lives = 3
         self.gameStart = True
-
+        self.game_over = False
+        self.game_won = False
+        
     def current_coord(self, x, y, dx=0, dy=0):
-        """return current coordinate"""
+        """
+        :return: (tuple) current coordinate index in the form of (y, x)
+        which equals to the spot board[y][x]
+        """
         if dx != 0:
             if dx == 2:  # move right -> detect right edge of the object
                 return (int(y//UNIT), int((x+SPACE+dx)//UNIT))
@@ -129,50 +134,72 @@ class Board():
                 new_board[i][j].append(intersect)
         return new_board
 
+    def ifMiddle(self, obj_x, obj_y):
+        """Check in the obj is at the middle of a unit square"""
+        if 5 < obj_x%UNIT < 15 and 5 < obj_y%UNIT < 15:
+            return True
+        return False
+    
     def ifIntersect(self, obj_x, obj_y):
         """
         :return: (bool) if the coord is an intersection
         """
-        if 13 < obj_x%UNIT < 17 and 13 < obj_y%UNIT < 17:
+        if 5 < obj_x%UNIT < 15 and 5 < obj_y%UNIT < 15:
             cur_y, cur_x = self.current_coord(obj_x, obj_y)
             if self.board[cur_y][cur_x][2]:
                 return True
-            return False
         return False
-
-    def ifCollision(self, x, y, dx, dy):
+        
+    def ifCollision(self, obj_x, obj_y, dx, dy):
         """
-        :param x: center x of the object (ghosts/Pacman)
-        :param y: center y of the object (ghosts/Pacman)
+        :param obj_x: center x of the object (ghosts/Pacman)
+        :param obj_y: center y of the object (ghosts/Pacman)
         :return: (bool) True, if next step will collide; False, if will not collide
         """
         # check if the object moving direction is movable
         detect = 0
         if dx != 0:
-            if dx == 2:  # move right -> detect right edge of the object
-                detect = originalBoard[int(y//UNIT)][int((x+SPACE+dx)//UNIT)]
-            elif dx == -2:  # move left
-                detect = originalBoard[int(y//UNIT)][int((x-SPACE+dx)//UNIT)]
-        elif dy != 0:
-            if dy == -2:  # move up -> detect upper bound
-                detect = originalBoard[int((y+dy-SPACE)//UNIT)][int(x//UNIT)]
-            elif dy == 2:  # move down -> detect lower bound
-                detect = originalBoard[int((y+dy+SPACE)//UNIT)][int(x//UNIT)]
+            if dx > 0:  # move right -> detect right edge of the object
+                if originalBoard[int(obj_y//UNIT)][int((obj_x+SPACE+dx)//UNIT)] in NOTALLOW:
+                    return True
+            elif dx < 0:  # move left
+                 if originalBoard[int(obj_y//UNIT)][int((obj_x-SPACE+dx)//UNIT)] in NOTALLOW:
+                     return True
+        elif dy > 0:
+            if dy != 0:
+                if dy < 0:  # move up -> detect upper bound
+                    if originalBoard[int((obj_y-SPACE*2+dy)//UNIT)][int(obj_x//UNIT)] in NOTALLOW:
+                        return True
+                elif dy > 0:  # move down -> detect lower bound
+                    if originalBoard[int((obj_y+SPACE*2+dy)//UNIT)][int(obj_x//UNIT)] in NOTALLOW:
+                        return True
+        if 5 < obj_x%UNIT < 16:
+            if dx != 0:
+                if dx > 0:  # move right -> detect right edge of the object
+                    detect = originalBoard[int(obj_y//UNIT)][int((obj_x+SPACE+dx)//UNIT)]
+                elif dx < 0:  # move left
+                    detect = originalBoard[int(obj_y//UNIT)][int((obj_x-SPACE+dx)//UNIT)]
+        elif 5 < obj_y%UNIT < 16:
+            if dy != 0:
+                if dy < 0:  # move up -> detect upper bound
+                    detect = originalBoard[int((obj_y-SPACE*2+dy)//UNIT)][int(obj_x//UNIT)]
+                elif dy > 0:  # move down -> detect lower bound
+                    detect = originalBoard[int((obj_y+SPACE*2+dy)//UNIT)][int(obj_x//UNIT)]
+            # print(detect)
         if detect in NOTALLOW:
             return True
         return False
 
-    def ifTouched(self, player_x, player_y, ghost_x, ghost_y):
+    def ifTouched(self, player_x, player_y, ghost_x, ghost_y, attacked):
         """
         Check if Pacman have touched ghost
         if touched return True, else return Fasle
         """
+        if attacked:
+            return False
         if self.gameStart:
-            player_coord = self.current_coord(player_x+SPACE, player_y+SPACE)
-            ghost_coord = self.current_coord(ghost_x, ghost_y)
-            if player_coord == ghost_coord:
+            if abs(player_x-ghost_x)<UNIT+SPACE and abs(player_y-ghost_y)<UNIT+SPACE:
                 self.lives -= 1
-                self.gameStart = False
                 return True
         return False
 
@@ -196,17 +223,30 @@ class Board():
         screen.blit(score_text, (50, 830))
         for i in range(self.lives):
             screen.blit(pygame.transform.scale(player_images_forlives, (30, 30)), (600+i*50, 830))
+
+    def draw_game_over_or_won(self, screen, font):
+    
+        """
+        draw game over or won
+        """
+
+        if self.lives == 0:
+            pygame.draw.rect(screen, (255, 255, 255), [50, 300, 650, 300],0, 10)
+            pygame.draw.rect(screen, (100,100,100), [70, 320, 610, 260], 0, 10)
+            gameover_text = font.render('Game over! ', True, (255,0,0))
+            screen.blit(gameover_text, (300, 420))
+            return False
+
+        if self.score == 2620:
+            pygame.draw.rect(screen, 'white', [50, 300, 650, 300],0, 10)
+            pygame.draw.rect(screen, 'dark gray', [70, 320, 610, 260], 0, 10)
+            gameover_text = font.render('Victory! ', True, (0,255,255))
+            screen.blit(gameover_text, (300, 420))     
+            return False
             
-    '''換成上面的
-    def draw_live(self, screen, font):
-        """
-        update and draw the live pac man left
-        """
-        pass
-        
-    def draw_score(self, screen, font):
-        pass
-    '''
+        else:
+            return True    
+
     def draw_environment(self, screen):
         coeff_x = 25
         coeff_y = 25
@@ -240,3 +280,55 @@ class Board():
                 elif coord == 9:  # the gate
                     pygame.draw.line(screen, WHITE, (j*coeff_x, (i+0.5)*coeff_y), ((j+1)*coeff_x, (i+0.5)*coeff_y), 3)
 
+    def bfs_setdir(self, ghost, target):
+        """
+        :param ghost_index: (tup) (i, j) == board[j][i]
+        :param target_index: (tup) (i,j) == board[j][i]
+        """
+        q = []
+        dist = [[float("inf") for j in range(len(self.board[0]))] for i in range(len(self.board))]
+        parent = [[(-2,-2) for j in range(len(self.board[0]))] for i in range(len(self.board))]
+        q.append(ghost)
+        dist[ghost[0]][ghost[1]] = 0  # the departure point of ghost, dist == 0
+    
+        while q and parent[target[0]][target[1]] == (-2,-2):
+            curr = q.pop(0)
+            
+            for i in range(4):
+                if self.board[curr[0]][curr[1]][1][i] == 1:  # check if the direction is available
+                    neighbor = 0
+                    if i == 0:  #up
+                        neighbor = (curr[0]-1, curr[1])
+                    elif i == 1:  #down
+                        neighbor = (curr[0]+1, curr[1])
+                    elif i == 2:  # left
+                        neighbor = (curr[0], curr[1]-1)
+                    elif i == 3:
+                        neighbor = (curr[0], curr[1]+1)
+                    if parent[neighbor[0]][neighbor[1]] == (-2, -2):  # unvisited
+                        dist[neighbor[0]][neighbor[1]] = dist[curr[0]][curr[1]]+1
+                        parent[neighbor[0]][neighbor[1]] = curr
+                        q.append(neighbor)  # enqueue the front
+        if parent[target[0]][target[1]] == (-2,-2):  # if cannot reach
+            return False
+        else:
+            best_route = []
+            curr = target
+            while curr != ghost:
+                best_route.insert(0, curr)
+                curr = parent[curr[0]][curr[1]]
+            # best_route.insert(0, start)
+            next_step = best_route[0]
+            direction = 4
+            if next_step[1] != ghost[1]:  # x-direction
+                if next_step[1] - ghost[1] > 0:
+                    direction = 3
+                else:
+                    direction = 2
+            elif next_step[0] != ghost[0]:  # y-direction
+                if next_step[0] - ghost[0] > 0:  # down
+                    direction = 1
+                else:
+                    direction = 0
+            # print("next step", next_step, "ghost", ghost, "dir", direction)
+            return direction
