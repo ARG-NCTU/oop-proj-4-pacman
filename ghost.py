@@ -2,8 +2,8 @@ import pygame
 import random
 import environment as env
 # import agent
-SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 950
+SCREEN_WIDTH = 750
+SCREEN_HEIGHT = 875
 UNIT = 30
 SPACE = UNIT//2
 
@@ -51,11 +51,15 @@ class Ghost(pygame.sprite.Sprite):
             self._attacked = False
             if self.name == "orange" or self.name == "blue":
                 self.algorithm = "random"
-
+        
         self.rect.x += self.dx
         self.rect.y += self.dy
         self.deadRect.x += self.dx
         self.deadRect.y += self.dy
+        if self.rect.x > SCREEN_WIDTH:
+            self.rect.x = SPACE
+        elif self.rect.x < 0:
+            self.rect.x = SCREEN_WIDTH-SPACE
 
     def set_dir(self, next_step, canMove):
         """
@@ -73,9 +77,26 @@ class Ghost(pygame.sprite.Sprite):
                 self.dy = 0
             elif next_step == 3 and self.dx == 0:
                 self.dx = 2
-                self.dy = 0 
+                self.dy = 0
+        elif self.algorithm == "ud_prior":
+            self.ud_set_dir(canMove, next_step)
         else:
             self.random_set_dir(canMove)
+
+    def ud_set_dir(self, canMove, bfs_next):
+        """If at an intersection choose up and down first"""
+        if canMove[0] and self.dy == 0:
+            self.dx = 0
+            self.dy = -2 
+        elif canMove[1] and self.dy == 0:
+            self.dx = 0
+            self.dy = 2
+        elif bfs_next == 2 and self.dx == 0:
+            self.dx = -2
+            self.dy = 0
+        elif bfs_next == 3 and self.dx == 0:
+            self.dx = 2
+            self.dy = 0
 
     def random_set_dir(self, canMove):
         choice = 0
