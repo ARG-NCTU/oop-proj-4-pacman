@@ -89,16 +89,18 @@ class Ghost(pygame.sprite.Sprite):
 
     def ud_set_dir(self, canMove, bfs_next):
         """If at an intersection choose up and down first"""
+        x_dir = random.randrange(2, 4)
         if canMove[0] and self.dy == 0:
             self.dx = 0
             self.dy = -2 
         elif canMove[1] and self.dy == 0:
             self.dx = 0
             self.dy = 2
-        elif bfs_next == 2 and self.dx == 0:
+        
+        elif x_dir == 2 and canMove[2] and self.dx == 0:
             self.dx = -2
             self.dy = 0
-        elif bfs_next == 3 and self.dx == 0:
+        elif x_dir == 3 and canMove[3] and self.dx == 0:
             self.dx = 2
             self.dy = 0
 

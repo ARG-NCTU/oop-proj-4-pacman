@@ -31,8 +31,8 @@ font = pygame.font.Font('freesansbold.ttf', 20)
 # create ghosts
 pinky = Ghost("pink",UNIT_SQUARE*2.5,30.5*UNIT_SQUARE,0,-2, "bfs")
 blue = Ghost("blue",UNIT_SQUARE*14.5,15.5*UNIT_SQUARE,2,0, "bfs")
-red = Ghost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, "ud_prior")
-orange = Ghost("orange", UNIT_SQUARE*15.5, 15.5*UNIT_SQUARE, 0, -2, "random")
+red = Ghost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, "random")
+orange = Ghost("orange", UNIT_SQUARE*15.5, 15.5*UNIT_SQUARE, 0, -2, "ud_prior")
 ghosts = [pinky, blue, red, orange]
 
 # create player
@@ -91,8 +91,8 @@ while is_running:
             if touched == True: 
                 pinky = Ghost("pink",UNIT_SQUARE*2.5,30.5*UNIT_SQUARE,0,-2, "bfs")
                 blue = Ghost("blue",UNIT_SQUARE*14.5,15.5*UNIT_SQUARE,2,0, "bfs")
-                red = Ghost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, "ud_prior")
-                orange = Ghost("orange", UNIT_SQUARE*15.5, 15.5*UNIT_SQUARE, 0, -2, "random")
+                red = Ghost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, "random")
+                orange = Ghost("orange", UNIT_SQUARE*15.5, 15.5*UNIT_SQUARE, 0, -2, "ud_prior")
                 ghosts = [pinky, blue, red, orange]
                 player = Player(UNIT_SQUARE*15,24*UNIT_SQUARE, 2, 0)
                 player.direction = 2
