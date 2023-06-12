@@ -51,15 +51,19 @@ class Ghost(pygame.sprite.Sprite):
             self._attacked = False
             if self.name == "orange" or self.name == "blue":
                 self.algorithm = "random"
+            if self.name == "red":
+                self.algorithm = "ud_prior"
         
         self.rect.x += self.dx
         self.rect.y += self.dy
         self.deadRect.x += self.dx
         self.deadRect.y += self.dy
         if self.rect.x > SCREEN_WIDTH:
-            self.rect.x = SPACE
+            self.rect.x = UNIT-10
+            self.deadRect.x = UNIT-10
         elif self.rect.x < 0:
-            self.rect.x = SCREEN_WIDTH-SPACE
+            self.rect.x = SCREEN_WIDTH-UNIT+10
+            self.rect.x = SCREEN_WIDTH-UNIT+10
 
     def set_dir(self, next_step, canMove):
         """

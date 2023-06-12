@@ -290,10 +290,9 @@ class Board():
         parent = [[(-2,-2) for j in range(len(self.board[0]))] for i in range(len(self.board))]
         q.append(ghost)
         dist[ghost[0]][ghost[1]] = 0  # the departure point of ghost, dist == 0
-    
+        
         while q and parent[target[0]][target[1]] == (-2,-2):
             curr = q.pop(0)
-            
             for i in range(4):
                 if self.board[curr[0]][curr[1]][1][i] == 1:  # check if the direction is available
                     neighbor = 0
@@ -318,6 +317,8 @@ class Board():
                 best_route.insert(0, curr)
                 curr = parent[curr[0]][curr[1]]
             # best_route.insert(0, start)
+            if not best_route:
+                return False
             next_step = best_route[0]
             direction = 4
             if next_step[1] != ghost[1]:  # x-direction
@@ -332,3 +333,6 @@ class Board():
                     direction = 0
             # print("next step", next_step, "ghost", ghost, "dir", direction)
             return direction
+
+board = Board()
+print(board.board)

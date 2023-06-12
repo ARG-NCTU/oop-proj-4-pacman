@@ -94,7 +94,7 @@ while is_running:
                 red = Ghost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, "ud_prior")
                 orange = Ghost("orange", UNIT_SQUARE*15.5, 15.5*UNIT_SQUARE, 0, -2, "random")
                 ghosts = [pinky, blue, red, orange]
-                player = Player(UNIT_SQUARE*14.5,23.5*UNIT_SQUARE, 1, 0)
+                player = Player(UNIT_SQUARE*15,24*UNIT_SQUARE, 2, 0)
                 player.direction = 2
                 for i in range(len(ghosts)):
                     ghost = ghosts[i]
@@ -112,14 +112,11 @@ while is_running:
                 ghost_coord = board.current_coord(ghost.rect.centerx, ghost.rect.centery)  # (y, x)
                 player_coord = board.current_coord(player.player_x+SPACE, player.player_y+SPACE, player.dx, player.dy)
                 if not ghost._attacked:
-                    next_step = board.bfs_setdir(ghost_coord, player_coord)
-                    canMove = board.canMove(ghost.rect.centerx, ghost.rect.centery)
-                    ghost.set_dir(next_step, canMove)
+                    next_step = board.bfs_setdir(ghost_coord, player_coord)  
                 else:
                     next_step = board.bfs_setdir(ghost_coord, (16, 15))  # target is the gate (mid of the board)
-                    ghost.set_dir(next_step, canMove)
-                    # canMove = board.canMove(ghost.rect.centerx, ghost.rect.centery)
-                    # ghost.random_set_dir(canMove)
+                canMove = board.canMove(ghost.rect.centerx, ghost.rect.centery)
+                ghost.set_dir(next_step, canMove)
             ghost.update()
             ghost.draw(screen)
         
