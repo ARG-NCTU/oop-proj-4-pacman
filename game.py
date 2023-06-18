@@ -102,7 +102,7 @@ while is_running:
                 canMove = [0,0,0,0]
                 player.draw(counter, screen, canMove)
                 pygame.display.flip()
-                time.sleep(1)  #停1秒
+                time.sleep(0.5)  #停0.5秒
 
 
             # determine whether the object need to makes turn, it must in the area of the unit square center
@@ -131,7 +131,7 @@ while is_running:
     for event in pygame.event.get():
         # quit game
         if event.type == pygame.QUIT:
-            is_runnung = False
+            is_running = False
         #鍵盤控制pacman
         # if player_intersect:
         if event.type == pygame.KEYDOWN:
