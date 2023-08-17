@@ -1,4 +1,4 @@
-# group4_pacman
+ee# group4_pacman
 # Game Instruction
 <img src="./oop4.gif"/>
 In this game, your objective is to guide the iconic character, Pacman, as he roams around the pathways, eating all the dots scattered throughout. You need to clear the road by devouring every dot you encounter within a limited number of lives. Eating the dots will increase your score (eating each small dot gets 10 points, and eating each big dot gets 50 points), the score will be shown on the lower-left corner of the screen. 
@@ -37,8 +37,8 @@ You can change "oop_env" to what ever the name you like.
 ```
 $ conda create --name oop_env python=3.8.10
 $ conda activate oop_env
-$ pip3 install pygame
-$ pip3 install numpy
+$ conda install -c conda-forge pygame
+$ conda install -c conda-forge numpy
 ```
 cd to your oop-proj-proj-4-pacman dir location, and run the game.
 ```
