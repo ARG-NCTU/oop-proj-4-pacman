@@ -7,6 +7,8 @@ ClassDiagram{
 //============
     //import pygame
 
+    //Empty Category
+
     class Agent{
     __init__(self)
 
@@ -44,7 +46,7 @@ ClassDiagram{
     //import random
     //import environment
 
-    //inherit by pygame sprite Sprite
+    //inherit by Sprite
 
     class Ghost{
     dx
@@ -86,7 +88,7 @@ ClassDiagram{
     player_y
     direction : int
     player_speed : int
-    control
+    control : int
 
     __init__(self, player_x, player_y, dx, dy)
     draw(self, counter, screen, canMove)
@@ -98,6 +100,9 @@ ClassDiagram{
 
     Ghost -g-> Sprite;
     Player -g-> Sprite;
+
+    Ghost -a-> Player;
+    Board -a-> Player;
 
 }
 
