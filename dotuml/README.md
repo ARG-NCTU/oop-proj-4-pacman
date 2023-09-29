@@ -1,9 +1,8 @@
-Mark
-=====
->a: Aggregation, 
-c: Composition, 
-g: inherit
 
 Use Tool
+=====
+>https://dotuml.com/playground.html
+
+UML Tutorial
 -----
->https://dotuml.com/#
+>https://www.tutorialspoint.com/uml/index.htm
