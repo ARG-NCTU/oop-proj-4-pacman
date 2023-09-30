@@ -1,0 +1,110 @@
+ClassDiagram{
+
+    class Sprite{
+
+    }
+
+//============
+    //import pygame
+
+    //Empty Category
+
+    class Agent{
+    __init__(self)
+
+    }
+
+//============
+    //import pygame
+
+    class Board{
+    board : list
+    score : int
+    lives : int
+    gameStart : bool
+    game_over : bool
+    game_wom : bool
+
+    __init__(self)
+    current_coord(self, x, y)
+    detect_eat(self, obj_x, obj_y)
+    intersect_map(self, boards)
+    ifMiddle(self, obj_x, obj_y)
+    ifIntersect(self, obj_x, obj_y)
+    ifCollision(self, obj_x, obj_y, dx, dy)
+    ifTouched(self, player_x, player_y, ghost_x, ghost_y, attacked)
+    canMove(self, obj_x, obj_y)
+    draw_score_and_lives(self, screen, font)
+    draw_game_over_or_won(self, screen, font)
+    draw_environment(self, screen)
+    bfs_setdir(self, ghost, target)
+
+    }
+
+//============
+    //import pygame
+    //import random
+    //import environment
+
+    //inherit by Sprite
+
+    class Ghost{
+    dx
+    dy
+    name
+    img
+    image
+    dead
+    deadImg
+    rect
+    rect.center : tuple
+    deadRect
+    deadRect.center : tuple
+    _attacked : bool
+    _attackedCounter : int
+    __attactedTime : int
+
+    __init__(self, name, x, y, dx, dy, algorithm)
+    update(self)
+    set_dir(self, next_step, canMove)
+    ud_set_dir(self, canMove, bfs_next)
+    random_set_dir(self, canMove)
+    set_target(self)
+    set_attacked(self)
+    draw(self, screen)
+
+    }
+
+//============
+    //import pygame
+    //import environment
+
+    //inherit by pygame sprite Sprite
+
+    class Player{
+    dx
+    dy
+    player_x
+    player_y
+    direction : int
+    player_speed : int
+    control : int
+
+    __init__(self, player_x, player_y, dx, dy)
+    draw(self, counter, screen, canMove)
+    update(self, direction, canMove, intersected, collision)
+
+    }
+
+// a: Aggregation, c: Composition, g: inherit
+
+    Ghost -g-> Sprite;
+    Player -g-> Sprite;
+
+    Ghost -a-> Player;
+    Board -a-> Player;
+
+}
+
+
+
