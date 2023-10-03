@@ -101,9 +101,6 @@ ClassDiagram{
     Ghost -g-> Sprite;
     Player -g-> Sprite;
 
-    Ghost -a-> Player;
-    Board -a-> Player;
-
 }
 
 
