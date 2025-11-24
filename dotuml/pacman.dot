@@ -67,11 +67,32 @@ ClassDiagram{
     __init__(self, name, x, y, dx, dy, algorithm)
     update(self)
     set_dir(self, next_step, canMove)
+    _apply_bfs_step(self, next_step)
     ud_set_dir(self, canMove, bfs_next)
     random_set_dir(self, canMove)
     set_target(self)
     set_attacked(self)
     draw(self, screen)
+
+    }
+
+    class HunterGhost{
+    lock_interval : int
+    _frames_since_turn : int
+
+    __init__(self, name, x, y, dx, dy, algorithm, lock_interval)
+    set_dir(self, next_step, canMove)
+
+    }
+
+    class ScatterGhost{
+    scatter_duration : int
+    chase_duration : int
+    _phase_counter : int
+    _scatter_mode : bool
+
+    __init__(self, name, x, y, dx, dy, algorithm, scatter_duration, chase_duration)
+    set_dir(self, next_step, canMove)
 
     }
 
@@ -100,6 +121,8 @@ ClassDiagram{
 
     Ghost -g-> Sprite;
     Player -g-> Sprite;
+    HunterGhost -g-> Ghost;
+    ScatterGhost -g-> Ghost;
 
     Ghost -a-> Player;
     Board -a-> Player;
