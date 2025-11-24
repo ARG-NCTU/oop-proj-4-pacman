@@ -1,6 +1,6 @@
 import pygame
 # from player import Player
-from ghost import *
+from ghost import Ghost, HunterGhost, ScatterGhost
 from player import *
 import environment as env
 import time
@@ -30,8 +30,8 @@ font = pygame.font.Font('freesansbold.ttf', 20)
 
 # create ghosts
 pinky = Ghost("pink",UNIT_SQUARE*2.5,30.5*UNIT_SQUARE,0,-2, "bfs")
-blue = Ghost("blue",UNIT_SQUARE*14.5,15.5*UNIT_SQUARE,2,0, "bfs")
-red = Ghost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, "random")
+blue = ScatterGhost("blue",UNIT_SQUARE*14.5,15.5*UNIT_SQUARE,2,0, scatter_duration=210, chase_duration=120)
+red = HunterGhost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, lock_interval=20)
 orange = Ghost("orange", UNIT_SQUARE*15.5, 15.5*UNIT_SQUARE, 0, -2, "ud_prior")
 ghosts = [pinky, blue, red, orange]
 
@@ -90,8 +90,8 @@ while is_running:
             #如果pcaman碰到鬼 座標重設（重頭開始）
             if touched == True: 
                 pinky = Ghost("pink",UNIT_SQUARE*2.5,30.5*UNIT_SQUARE,0,-2, "bfs")
-                blue = Ghost("blue",UNIT_SQUARE*14.5,15.5*UNIT_SQUARE,2,0, "bfs")
-                red = Ghost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, "random")
+                blue = ScatterGhost("blue",UNIT_SQUARE*14.5,15.5*UNIT_SQUARE,2,0, scatter_duration=210, chase_duration=120)
+                red = HunterGhost("red",UNIT_SQUARE*27.5,2.5*UNIT_SQUARE,-2,0, lock_interval=20)
                 orange = Ghost("orange", UNIT_SQUARE*15.5, 15.5*UNIT_SQUARE, 0, -2, "ud_prior")
                 ghosts = [pinky, blue, red, orange]
                 player = Player(UNIT_SQUARE*15,24*UNIT_SQUARE, 2, 0)

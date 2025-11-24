@@ -70,22 +70,26 @@ class Ghost(pygame.sprite.Sprite):
         :param target: the target coord (x, y); board[y][x]
         """
         if self.algorithm == "bfs":
-            if next_step == 0 and self.dy == 0:
-                self.dx = 0
-                self.dy = -2
-            elif next_step == 1 and self.dy == 0:
-                self.dx = 0
-                self.dy = 2
-            elif next_step == 2 and self.dx == 0:
-                self.dx = -2
-                self.dy = 0
-            elif next_step == 3 and self.dx == 0:
-                self.dx = 2
-                self.dy = 0
+            self._apply_bfs_step(next_step)
         elif self.algorithm == "ud_prior":
             self.ud_set_dir(canMove, next_step)
         else:
             self.random_set_dir(canMove)
+
+    def _apply_bfs_step(self, next_step):
+        """Translate BFS output into a velocity change."""
+        if next_step == 0 and self.dy == 0:
+            self.dx = 0
+            self.dy = -2
+        elif next_step == 1 and self.dy == 0:
+            self.dx = 0
+            self.dy = 2
+        elif next_step == 2 and self.dx == 0:
+            self.dx = -2
+            self.dy = 0
+        elif next_step == 3 and self.dx == 0:
+            self.dx = 2
+            self.dy = 0
 
     def ud_set_dir(self, canMove, bfs_next):
         """If at an intersection choose up and down first"""
@@ -142,3 +146,57 @@ class Ghost(pygame.sprite.Sprite):
             screen.blit(self.image, self.rect)
         else:
             screen.blit(self.deadImg, self.deadRect)
+
+
+class HunterGhost(Ghost):
+    """A ghost that commits to movement corridors before turning again."""
+
+    def __init__(self, name, x, y, dx, dy, algorithm="bfs", lock_interval=18):
+        super().__init__(name, x, y, dx, dy, algorithm)
+        self.lock_interval = max(1, lock_interval)
+        self._frames_since_turn = self.lock_interval
+
+    def set_dir(self, next_step, canMove):
+        if self._attacked:
+            self._frames_since_turn = self.lock_interval
+            super().set_dir(next_step, canMove)
+            return
+
+        self._frames_since_turn += 1
+        if self._frames_since_turn < self.lock_interval:
+            return
+
+        self._frames_since_turn = 0
+        self._apply_bfs_step(next_step)
+
+
+class ScatterGhost(Ghost):
+    """A ghost that alternates between scatter (random) and chase (BFS) modes."""
+
+    def __init__(self, name, x, y, dx, dy, algorithm="random", scatter_duration=180, chase_duration=120):
+        super().__init__(name, x, y, dx, dy, algorithm)
+        self.scatter_duration = max(1, scatter_duration)
+        self.chase_duration = max(1, chase_duration)
+        self._phase_counter = 0
+        self._scatter_mode = True
+
+    def set_dir(self, next_step, canMove):
+        if self._attacked:
+            # Reset to the usual frightened behaviour handled by the base class.
+            self._phase_counter = 0
+            self._scatter_mode = True
+            super().set_dir(next_step, canMove)
+            return
+
+        self._phase_counter += 1
+        if self._scatter_mode and self._phase_counter >= self.scatter_duration:
+            self._phase_counter = 0
+            self._scatter_mode = False
+        elif not self._scatter_mode and self._phase_counter >= self.chase_duration:
+            self._phase_counter = 0
+            self._scatter_mode = True
+
+        if self._scatter_mode:
+            self.random_set_dir(canMove)
+        else:
+            self._apply_bfs_step(next_step)
