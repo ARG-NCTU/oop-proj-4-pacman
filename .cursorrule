@@ -1,0 +1,20 @@
+# Cursor Rule – Test-Driven Workflow
+
+1. **Always begin with tests**
+   - Before touching production code, add or update automated tests that capture the desired behavior and currently fail.
+   - Keep tests small and focused; prefer unit tests unless higher-level coverage is strictly necessary.
+
+2. **Implement only what tests demand**
+   - Write the minimal production code needed to make the new failing tests pass.
+   - Refactor only when tests are green, preserving behavior.
+
+3. **Document every change**
+   - After tests pass, update relevant docs (e.g., `README.md`, design notes) to describe new behavior, assumptions, or usage instructions.
+   - Mention new tests or scenarios in the documentation when it adds clarity.
+
+4. **Verification checklist before finishing any task**
+   - All new/updated tests are committed and green.
+   - Production code changes are covered by tests.
+   - Documentation reflects the implemented behavior.
+
+This repository must follow the above TDD loop for every change.
