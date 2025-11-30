@@ -11,6 +11,10 @@ Occasionally, you will come across big dots located in four parts of the maze. W
 
 Your goal is to control Pacman to clear the maze of all the dots before losing all your lives.
 
+## Automated player scripts
+
+For automated demos or tests that run without a keyboard, instantiate `player.ScriptedPlayer`. Provide the optional `move_script` argument with a list of direction codes (`0`=up, `1`=down, `2`=left, `3`=right). The player automatically applies each move when the corresponding direction is currently allowed, and it can optionally loop the script via the `loop_script=True` flag.
+
 # Game download and run
 ## Ubuntu
 git clone the game:

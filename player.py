@@ -74,4 +74,55 @@ class Player(pygame.sprite.Sprite):
             self.player_x = -50
         if self.player_x < -50:
             self.player_x = 700
+
+
+class ScriptedPlayer(Player):
+    """A Player that replays a predetermined list of moves."""
+
+    def __init__(self, player_x, player_y, dx, dy, control=0, move_script=None, loop_script=False):
+        super().__init__(player_x, player_y, dx, dy, control)
+        self._script = self._validate_script(move_script or [])
+        self.loop_script = loop_script
+        self._script_index = 0
+
+    def draw(self, counter, screen, canMove):
+        self.consume_scripted_move(canMove)
+        super().draw(counter, screen, canMove)
+
+    def consume_scripted_move(self, canMove):
+        """
+        Apply the next scripted move when it is currently allowed.
+        :return: bool indicating whether a move from the script was consumed.
+        """
+        if len(canMove) != 4:
+            raise ValueError("canMove must describe exactly four directions.")
+
+        if not self._script:
+            self.control = 4
+            return False
+
+        if self._script_index >= len(self._script):
+            if self.loop_script:
+                self._script_index = 0
+            else:
+                self.control = 4
+                return False
+
+        desired_direction = self._script[self._script_index]
+
+        if not canMove[desired_direction]:
+            self.control = 4
+            return False
+
+        self.control = desired_direction
+        self.direction = desired_direction
+        self._script_index += 1
+        return True
+
+    @staticmethod
+    def _validate_script(script):
+        for move in script:
+            if move not in (0, 1, 2, 3):
+                raise ValueError("Scripted moves must be integers between 0 and 3.")
+        return list(script)
     
