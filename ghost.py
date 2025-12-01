@@ -200,3 +200,56 @@ class ScatterGhost(Ghost):
             self.random_set_dir(canMove)
         else:
             self._apply_bfs_step(next_step)
+
+
+class ScriptedGhost(Ghost):
+    """A ghost that replays a predetermined list of moves, then falls back to AI."""
+
+    _DIR_TO_VELOCITY = {
+        0: (0, -2),  # up
+        1: (0, 2),   # down
+        2: (-2, 0),  # left
+        3: (2, 0),   # right
+    }
+
+    def __init__(self, name, x, y, dx, dy, algorithm="bfs", move_script=None, loop_script=False):
+        super().__init__(name, x, y, dx, dy, algorithm)
+        self._script = self._validate_script(move_script or [])
+        self.loop_script = loop_script
+        self._script_index = 0
+
+    def set_dir(self, next_step, canMove):
+        if self._attacked or not self.consume_scripted_move(canMove):
+            super().set_dir(next_step, canMove)
+
+    def consume_scripted_move(self, can_move):
+        """
+        Apply the next scripted direction if the board currently allows it.
+        :return: bool indicating whether the script controlled the move.
+        """
+        if len(can_move) != 4:
+            raise ValueError("canMove must describe exactly four directions.")
+
+        if not self._script:
+            return False
+
+        if self._script_index >= len(self._script):
+            if self.loop_script:
+                self._script_index = 0
+            else:
+                return False
+
+        desired_direction = self._script[self._script_index]
+        if not can_move[desired_direction]:
+            return False
+
+        self.dx, self.dy = self._DIR_TO_VELOCITY[desired_direction]
+        self._script_index += 1
+        return True
+
+    @staticmethod
+    def _validate_script(script):
+        for move in script:
+            if move not in (0, 1, 2, 3):
+                raise ValueError("Scripted moves must be integers between 0 and 3.")
+        return list(script)
