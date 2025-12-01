@@ -17,4 +17,18 @@
    - Production code changes are covered by tests.
    - Documentation reflects the implemented behavior.
 
+5. **PEP 8 is the default coding standard**
+   - Format code to be `black`-compatible (88-char lines, spaces not tabs).
+   - Use snake_case for functions/variables, PascalCase for classes, CONSTANT_CASE for module constants.
+   - Keep imports ordered stdlib → third-party → local and remove unused imports or variables.
+   - Prefer readable expressions over clever one-liners; split long functions into helpers when clarity suffers.
+
+6. **Clean Code expectations**
+   - Keep functions and methods short with single responsibilities; extract helpers instead of nesting deeply.
+   - Choose descriptive names for modules, classes, variables, and tests so intent is obvious without extra comments.
+   - Fail fast with clear exceptions or guard clauses; avoid silent pass blocks.
+   - Delete dead code and commented-out blocks once no longer necessary.
+   - Write docstrings or inline comments only when behavior is non-obvious, keeping them accurate and concise.
+   - Avoid module-level mutable globals; prefer passing state explicitly or encapsulating it in classes.
+
 This repository must follow the above TDD loop for every change.
