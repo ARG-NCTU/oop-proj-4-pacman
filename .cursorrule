@@ -29,5 +29,6 @@
    - Fail fast with clear exceptions or guard clauses; avoid silent pass blocks.
    - Delete dead code and commented-out blocks once no longer necessary.
    - Write docstrings or inline comments only when behavior is non-obvious, keeping them accurate and concise.
+   - Avoid module-level mutable globals; prefer passing state explicitly or encapsulating it in classes.
 
 This repository must follow the above TDD loop for every change.
