@@ -15,6 +15,10 @@ Your goal is to control Pacman to clear the maze of all the dots before losing a
 
 For automated demos or tests that run without a keyboard, instantiate `player.ScriptedPlayer`. Provide the optional `move_script` argument with a list of direction codes (`0`=up, `1`=down, `2`=left, `3`=right). The player automatically applies each move when the corresponding direction is currently allowed, and it can optionally loop the script via the `loop_script=True` flag.
 
+## Scripted ghost paths
+
+Automated scenarios occasionally need ghosts that move predictably. Instantiate `ghost.ScriptedGhost` with a `move_script` that mirrors the direction codes above. The ghost will replay each move whenever the board reports that direction is allowed and then fall back to its configured algorithm (e.g. `"bfs"`). Pass `loop_script=True` to make the pattern repeat indefinitely.
+
 # Game download and run
 ## Ubuntu
 git clone the game:

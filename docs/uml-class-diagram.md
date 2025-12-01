@@ -82,11 +82,18 @@ classDiagram
         +set_dir(next_step, canMove)
     }
 
+    class ScriptedGhost {
+        +loop_script : bool
+        +consume_scripted_move(canMove)
+        +set_dir(next_step, canMove)
+    }
+
     Sprite <|-- Player
     Player <|-- ScriptedPlayer
     Sprite <|-- Ghost
     Ghost <|-- HunterGhost
     Ghost <|-- ScatterGhost
+    Ghost <|-- ScriptedGhost
     GameLoop "1" *-- "1" Board : composes
     GameLoop "1" *-- "1" Player : controls
     GameLoop "1" *-- "4" Ghost : manages
@@ -101,3 +108,4 @@ Notes:
 - `HunterGhost` inherits from `Ghost` but throttles how often it can turn, which makes it commit to corridors before changing direction again.
 - `ScatterGhost` alternates between random “scatter” movement and directed BFS chases, giving the blue ghost a predictable rhythm between phases.
 - `ScriptedPlayer` extends `Player` and automatically replays a predetermined sequence of moves, which is useful for automated demos and tests where no keyboard input is available.
+- `ScriptedGhost` extends `Ghost` so automated demos can drive ghosts through predetermined paths before falling back to the normal targeting algorithm.
